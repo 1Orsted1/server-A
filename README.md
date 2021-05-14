@@ -5,9 +5,9 @@ _De momento solo se pueden consultar todos los usuarios y agregar usuarios_
 _desde un endpoint, se le va a ir agregando mas funcionalidades_
 
 ## Pre-requisitos
-_-node_
-_yarn_
-_sql-server (con la base de datos ya creada)_
+*node
+*yarn
+*sql-server (con la base de datos ya creada)
 
 ### Instalacion
 
