@@ -1,15 +1,15 @@
-#Server para registro usuarios en sql-server
+# Server para registro usuarios en sql-server
 
-##Funcionalidades
+## Funcionalidades
 _De momento solo se pueden consultar todos los usuarios y agregar usuarios_
 _desde un endpoint, se le va a ir agregando mas funcionalidades_
 
-##Pre-requisitos
+## Pre-requisitos
 _-node_
 _yarn_
 _sql-server (con la base de datos ya creada)_
 
-###Instalacion
+### Instalacion
 
 _clonar el repositorio_
 
@@ -22,7 +22,7 @@ yarn install
 _Crear un archivo .env que tenga la misma estructura del archivo adjunto_
 _"env.txt"_
 
-###Comandos
+### Comandos
 
 _Iniciar el servidor_
 
