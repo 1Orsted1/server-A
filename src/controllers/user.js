@@ -2,7 +2,7 @@
 const dboperations = require("../dboperations");
 const bycrypt = require("bcrypt-nodejs");
 
-const SignUp = async(req, res) => {
+const SignUp = async (req, res) => {
   let data = { ...req.body };
   const {
     usuario,
@@ -13,7 +13,7 @@ const SignUp = async(req, res) => {
     clave,
     repetir,
     email,
-  } =req.body;
+  } = req.body;
 
   // console.log(usuario, nombre, apellido_m, apellido_p, tipo_usuario, email);
   if (!clave || !repetir) {
@@ -41,12 +41,17 @@ const SignUp = async(req, res) => {
             data.clave = hash;
             data.email = data.email.toLowerCase();
 
-              try { 
-                  dboperations.setData(data).then((result) => {    
-                      res.status(201).send({message: "Datos agregados", resultado: result});
+            try {
+              dboperations.setNewUser(data).then((result) => {
+                res.status(200).send({
+                  resultado: {
+                    user: "ok",
+                    email: result,
+                  },
+                });
               });
-            }catch(e){
-                console.log(e);
+            } catch (e) {
+              console.log(e);
             }
           }
         });

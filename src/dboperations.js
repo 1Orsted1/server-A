@@ -48,4 +48,15 @@ async function setData(data) {
   }
 }
 
-module.exports = { getOrders: getOrders, setData: setData };
+async function setNewUser(data) {
+  try {
+    const myConnection = await getConnection(config.sql);
+    const addU = await myConnection.getEvents.addUser(data);
+    return addU.recordsets;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+module.exports = { getOrders: getOrders, setData: setData, setNewUser:setNewUser};
