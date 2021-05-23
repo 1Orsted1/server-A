@@ -36,7 +36,7 @@ const register = async ({ sql, getConnection }) => {
     request.input("email", sql.NVarChar(30), email);
     return await request.query(sqlQueries.insertarPrueba);
   };
-    
+
   const addUser = async ({
     usuario,
     nombre,
@@ -62,9 +62,16 @@ const register = async ({ sql, getConnection }) => {
     request.input("fecha_baja", sql.Date, fecha_baja);
     request.input("clave", sql.VarBinary(sql.MAX), passwordBuffer);
     request.input("email", sql.NVarChar(30), email);
-    return await request.execute('SP_agregar_usuario');
+    return await request.execute("SP_agregar_usuario");
   };
 
-  return { getUsers, setUser, addUser };
+  const searchUser = async ( user ) => {
+    const cnx = await getConnection();
+    const request = await cnx.request();
+    request.input("usuario", sql.NVarChar(20), user);
+    return await request.query(sqlQueries.consultaUsuario);
+  };
+
+  return { getUsers, setUser, addUser, searchUser };
 };
 module.exports = { register };

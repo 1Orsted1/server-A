@@ -1,8 +1,12 @@
 //Controllers/user.js
+const {
+  GenerateRefreshToken,
+  GenerateAccessToken,
+} = require("../services/jwt");
 const dboperations = require("../dboperations");
-const bycrypt = require("bcrypt-nodejs");
-
-const SignUp = async (req, res) => {
+const bcrypt = require("bcrypt-nodejs");
+const { setUserData, setRegisterData } = require("../util/userOperations");
+const SignUp = (req, res) => {
   let data = { ...req.body };
   const {
     usuario,
@@ -32,7 +36,7 @@ const SignUp = async (req, res) => {
       ) {
         res.status(404).send({ message: "Todos los campos son obligatorias" });
       } else {
-        bycrypt.hash(clave, null, null, function (err, hash) {
+        bcrypt.hash(clave, null, null, function (err, hash) {
           if (err) {
             res
               .status(500)
@@ -40,13 +44,13 @@ const SignUp = async (req, res) => {
           } else {
             data.clave = hash;
             data.email = data.email.toLowerCase();
-
             try {
               dboperations.setNewUser(data).then((result) => {
+                const newResult = setRegisterData(result);
                 res.status(200).send({
                   resultado: {
                     user: "ok",
-                    email: result,
+                    existe: newResult,
                   },
                 });
               });
@@ -60,6 +64,57 @@ const SignUp = async (req, res) => {
   }
 };
 
+const signIn = (req, res) => {
+  const params = req.body;
+  const password = params.clave;
+  try {
+    dboperations.searchUser(params.usuario).then((result) => {
+      if (result[0][0] === undefined) {
+        res.status(404).send({
+          resultado: { user: "ok", message: "Usuario no registrado" },
+        });
+      } else {
+        const userData = setUserData(result);
+        bcrypt.compare(password, userData.clave, (err, check) => {
+          if (err) {
+            res
+              .status(500)
+              .send({ resultado: { message: "Error en el servidor" } });
+          } else {
+            if (check) {
+              if (!userData.estado) {
+                res.status(200).send({
+                  resultado: {
+                    user: "ok",
+                    message: "El usuario no esta activado",
+                  },
+                });
+              } else {
+                res.status(200).send({
+                  resultado: {
+                    accessToken: GenerateAccessToken(userData),
+                    refreshToken: GenerateRefreshToken(userData),
+                  },
+                });
+              }
+            } else {
+              res.status(200).send({
+                resultado: {
+                  user: "ok",
+                  message: "Contraseña incorrecta",
+                },
+              });
+            }
+          }
+        });
+      }
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 module.exports = {
   SignUp,
+  signIn,
 };
