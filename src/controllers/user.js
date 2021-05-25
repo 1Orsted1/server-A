@@ -92,6 +92,7 @@ const signIn = (req, res) => {
               } else {
                 res.status(200).send({
                   resultado: {
+                    "tipo_usuario":userData.tipo_usuario,
                     accessToken: GenerateAccessToken(userData),
                     refreshToken: GenerateRefreshToken(userData),
                   },
